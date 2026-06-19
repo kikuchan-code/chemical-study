@@ -394,17 +394,6 @@
 
             createTable();
 
-            if (shuffleRowsCheckbox.checked) {
-
-                const rows = Array.from(tableBody.children);
-
-                shuffleArray(rows);
-
-                tableBody.innerHTML = '';
-
-                rows.forEach(row => tableBody.appendChild(row));
-            }
-
             // 1列目（官能基名）の重複管理
             const usedFirstColumnAnswers = new Set();
 
