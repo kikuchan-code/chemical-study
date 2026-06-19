@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>脂肪族炭化水素　日本語←→英語</title>
+    <style>
+        :root {
+            --main: #6167ee;
+            --main-dark: #46487c;
+            --bg: #f5f7fb;
+            --card: #ffffff;
+            --border: #dfe5ec;
+            --correct-bg: #d4edda;
+            --correct-border: #28a745;
+            --wrong-bg: #f8d7da;
+            --wrong-border: #dc3545;
+            --show-answer-bg: #cfe2ff;
+            --show-answer-border: #4d8dff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: var(--bg);
+            color: #222;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.4rem;
+        }
+
+        .top-bar {
+            margin-bottom: 20px;
+        }
+
+        .top-bar h1 {
+            margin: 10px 0 0;
+            font-size: 1.5rem;
+        }
+
+        .back-link {
+            color: var(--main);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: bold;
+        }
+
+        .back-link:hover {
+            color: var(--main-dark);
+            text-decoration: underline;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 16px;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+        }
+
+        .description {
+            margin-bottom: 18px;
+            line-height: 1.7;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .controls-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f7f9fc;
+            padding: 10px 14px;
+            border-radius: 12px;
+        }
+
+
+        input[type="number"] {
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 0.95rem;
+        }
+
+        button {
+            border: none;
+            background: var(--main);
+            color: white;
+            padding: 10px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: var(--main-dark);
+            transform: translateY(-1px);
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            border-radius: 12px;
+        }
+
+        table {
+            width: 100%;
+            min-width: 1300px;
+            border-collapse: collapse;
+
+            /* 追加 */
+            table-layout: fixed;
+        }
+
+        th,
+        td {
+            border: 1px solid var(--border);
+            padding: 10px;
+            text-align: center;
+
+            /* 追加 */
+            word-break: break-word;
+        }
+
+        th {
+            background: var(--main);
+            color: white;
+
+            /* stickyやめる */
+            position: static;
+        }
+
+        input[type="text"] {
+            width: clamp(100px, 80%, 200px);
+            padding: 8px 10px;
+
+            border: 2px solid #ccc;
+            border-radius: 8px;
+
+            font-size: 0.95rem;
+            text-align: center;
+
+            transition:
+                border-color 0.2s,
+                background 0.2s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--main);
+        }
+
+        input.correct {
+            background: var(--correct-bg);
+            border-color: var(--correct-border);
+        }
+
+        input.wrong {
+            background: var(--wrong-bg);
+            border-color: var(--wrong-border);
+        }
+
+        input.show-answer {
+            background: #cfe2ff;
+            border-color: #4d8dff;
+        }
+
+        .footer-note {
+            margin-top: 16px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 1000px) {
+
+            main {
+                padding: 10px;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .controls-group {
+                justify-content: space-between;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            th,
+            td {
+                font-size: 0.85rem;
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="card">
+
+            <div class="top-bar">
+                <a href="../chemistry.html" class="back-link">
+                    ← TOP
+                </a>
+
+                <h1>脂肪族炭化水素　日本語←→英語</h1><br>
+                　存在しない場合は、存在しないと答えること。
+            </div>
+
+            <div class="controls">
+                <div class="controls-group">
+                    <label for="holes">虫食いの数:</label>
+                    <input type="number" id="holes" name="holes" min="1" max="8" value="3">
+                </div>
+                <div class="controls-group"><label for="randomize">ランダムに行を入れ替える</label>
+                    <input type="checkbox" id="randomize" name="randomize">
+                </div>
+                <button onclick="createBlanks()">虫食いにする</button>
+                <button onclick="checkAnswers()">正誤判定</button>
+                <button onclick="showAnswers()">正解を表示</button>
+            </div>
+            <div class="table-wrap">
+                <table id="chemTable">
+                    <thead>
+                        <tr>
+                            <th>炭素数</th>
+                            <th>アルカン (英語)</th>
+                            <th>アルカン (日本語)</th>
+                            <th>アルケン (英語)</th>
+                            <th>アルケン (日本語)</th>
+                            <th>アルキン (英語)</th>
+                            <th>アルキン (日本語)</th>
+                            <th>アルキル基(英語)</th>
+                            <th>アルキル基 (日本語)</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <div class="footer-note">
+                    入力後「正誤判定」で採点できます。
+                </div>
+            </div>
+
+    </main>
+    <script>
+        const data = [
+            { carbon: 1, alkane: ['methane', 'メタン'], alkene: ['存在しない', '存在しない'], alkyne: ['存在しない', '存在しない'], alkylgroup: ['methyl基', 'メチル基'] },
+            { carbon: 2, alkane: ['ethane', 'エタン'], alkene: ['ethene', 'エテン'], alkyne: ['ethyne', 'エチン'], alkylgroup: ['ethyl基', 'エチル基'] },
+            { carbon: ['2 (慣用)'], alkane: ['ethane', 'エタン'], alkene: ['ethylene', 'エチレン'], alkyne: ['acetylene', 'アセチレン'], alkylgroup: ['ethyl基', 'エチル基'] },
+            { carbon: 3, alkane: ['propane', 'プロパン'], alkene: ['propene', 'プロペン'], alkyne: ['propyne', 'プロピン'], alkylgroup: ['propyl基', 'プロピル基'] },
+            { carbon: 4, alkane: ['butane', 'ブタン'], alkene: ['butene', 'ブテン'], alkyne: ['butyne', 'ブチン'], alkylgroup: ['butyl基', 'ブチル基'] },
+            { carbon: 5, alkane: ['pentane', 'ペンタン'], alkene: ['pentene', 'ペンテン'], alkyne: ['pentyne', 'ペンチン'], alkylgroup: ['pentyl基', 'ペンチル基'] },
+            { carbon: 6, alkane: ['hexane', 'ヘキサン'], alkene: ['hexene', 'ヘキセン'], alkyne: ['hexyne', 'ヘキシン'], alkylgroup: ['hexyl基', 'ヘキシル基'] },
+            { carbon: 7, alkane: ['heptane', 'ヘプタン'], alkene: ['heptene', 'ヘプテン'], alkyne: ['heptyne', 'ヘプチン'], alkylgroup: ['heptyl基', 'ヘプチル基'] },
+            { carbon: 8, alkane: ['octane', 'オクタン'], alkene: ['octene', 'オクテン'], alkyne: ['octyne', 'オクチン'], alkylgroup: ['octyl基', 'オクチル基'] },
+            { carbon: 9, alkane: ['nonane', 'ノナン'], alkene: ['nonene', 'ノネン'], alkyne: ['nonyne', 'ノニン'], alkylgroup: ['nonyl基', 'ノニル基'] },
+            { carbon: 10, alkane: ['decane', 'デカン'], alkene: ['decene', 'デセン'], alkyne: ['decyne', 'デキン'], alkylgroup: ['decyl基', 'デシル基'] }
+        ];
+
+        const tbody = document.querySelector('#chemTable tbody');
+
+        function populateTable() {
+            tbody.innerHTML = ''; // Clear existing table data
+            data.forEach((item) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.carbon}</td>
+                    <td>${item.alkane[0]}</td>
+                    <td>${item.alkane[1]}</td>
+                    <td>${item.alkene[0]}</td>
+                    <td>${item.alkene[1]}</td>
+                    <td>${item.alkyne[0]}</td>
+                    <td>${item.alkyne[1]}</td>
+                    <td>${item.alkylgroup[0]}</td>
+                    <td>${item.alkylgroup[1]}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function createBlanks() {
+            // Get the number of blanks per row
+            const holes = document.getElementById('holes').value;
+            const randomize = document.getElementById('randomize').checked;
+
+            // Reset table
+            populateTable();
+
+            // Randomize rows if needed
+            if (randomize) {
+                const rows = Array.from(tbody.querySelectorAll('tr'));
+                for (let i = rows.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    tbody.appendChild(rows[j]);
+                }
+            }
+
+            // Create blanks for each row
+            tbody.querySelectorAll('tr').forEach(row => {
+                const cells = Array.from(row.querySelectorAll('td:not(:first-child)'));
+                for (let i = 0; i < holes; i++) {
+                    const randomIndex = Math.floor(Math.random() * cells.length);
+                    const cell = cells[randomIndex];
+                    const text = cell.textContent;
+                    cell.innerHTML = `<input type="text" data-answer="${text}">`;
+                    cells.splice(randomIndex, 1);
+                }
+            });
+        }
+
+        function checkAnswers() {
+            const inputs = document.querySelectorAll('input[type="text"]');
+            inputs.forEach(input => {
+                if (input.value === input.dataset.answer) {
+                    input.style.backgroundColor = 'lightgreen';
+                } else {
+                    input.style.backgroundColor = 'lightcoral';
+                }
+            });
+        }
+
+        function showAnswers() {
+            const tbody = document.querySelector('#chemTable tbody');
+            const rows = Array.from(tbody.rows);
+            rows.forEach(row => {
+                const cells = Array.from(row.cells);
+                cells.forEach(cell => {
+                    const input = cell.querySelector('input');
+                    if (input) {
+                        if (input.value !== input.dataset.answer) {
+                            cell.style.backgroundColor = 'lightblue';
+                        }
+                        cell.textContent = input.dataset.answer;
+                    }
+                });
+            });
+        }
+
+        // Populate the table on page load
+        window.onload = populateTable;
+    </script>
+</body>
+
+</html>

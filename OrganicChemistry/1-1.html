@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>官能基テスト</title>
+
+    <style>
+        :root {
+            --main: #6167ee;
+            --main-dark: #46487c;
+            --bg: #f5f7fb;
+            --card: #ffffff;
+            --border: #dfe5ec;
+            --correct-bg: #d4edda;
+            --correct-border: #28a745;
+            --wrong-bg: #f8d7da;
+            --wrong-border: #dc3545;
+            --show-answer-bg: #cfe2ff;
+            --show-answer-border: #4d8dff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: var(--bg);
+            color: #222;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.4rem;
+        }
+
+        .top-bar {
+            margin-bottom: 20px;
+        }
+
+        .top-bar h1 {
+            margin: 10px 0 0;
+            font-size: 1.5rem;
+        }
+
+        .back-link {
+            color: var(--main);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: bold;
+        }
+
+        .back-link:hover {
+            color: var(--main-dark);
+            text-decoration: underline;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 16px;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+        }
+
+        .description {
+            margin-bottom: 18px;
+            line-height: 1.7;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .controls-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f7f9fc;
+            padding: 10px 14px;
+            border-radius: 12px;
+        }
+
+        input[type="number"] {
+            width: 60px;
+            padding: 6px;
+        }
+
+        button {
+            border: none;
+            background: var(--main);
+            color: white;
+            padding: 10px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: var(--main-dark);
+            transform: translateY(-1px);
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            border-radius: 12px;
+        }
+
+        table {
+            width: 100%;
+            min-width: 900px;
+            border-collapse: collapse;
+
+            /* 追加 */
+            table-layout: fixed;
+        }
+
+        th,
+        td {
+            border: 1px solid var(--border);
+            padding: 10px;
+            text-align: center;
+
+            /* 追加 */
+            word-break: break-word;
+        }
+
+        th {
+            background: var(--main);
+            color: white;
+
+            /* stickyやめる */
+            position: static;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            min-width: 90px;
+            padding: 8px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        input.correct {
+            background: var(--correct-bg);
+            border-color: var(--correct-border);
+        }
+
+        input.wrong {
+            background: var(--wrong-bg);
+            border-color: var(--wrong-border);
+        }
+
+        input.show-answer {
+            background: #cfe2ff;
+            border-color: #4d8dff;
+        }
+
+        .footer-note {
+            margin-top: 16px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 800px) {
+
+            main {
+                padding: 10px;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .controls-group {
+                justify-content: space-between;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            th,
+            td {
+                font-size: 0.85rem;
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main>
+
+
+
+        <div class="card">
+
+            <div class="top-bar">
+                <a href="../chemistry.html" class="back-link">
+                    ← TOP
+                </a>
+
+                <h1>官能基テスト</h1>
+            </div>
+
+            <div class="description">
+                R<sup>m</sup>, R<sub>n</sub> は
+                <strong>Rm</strong>, <strong>Rn</strong>
+                と入力してください。<br>
+                炭化水素類は <strong>R</strong> と表します。
+            </div>
+
+            <div class="controls">
+
+                <div class="controls-group">
+                    <label for="hole-count">1行あたりの穴の数</label>
+                    <input type="number" id="hole-count" min="1" max="5" value="1">
+                </div>
+
+                <div class="controls-group">
+                    <label>
+                        <input type="checkbox" id="shuffle-rows">
+                        行をランダム化
+                    </label>
+                </div>
+
+                <button id="randomize-button">
+                    ランダム出題
+                </button>
+
+                <button id="check-answers-button">
+                    正誤判定
+                </button>
+
+                <button id="show-answers-button">
+                    正解表示
+                </button>
+
+            </div>
+
+            <div class="table-wrap">
+                <table id="functional-groups-table">
+
+                    <thead>
+                        <tr>
+                            <th>官能基</th>
+                            <th>構造式</th>
+                            <th>化合物名</th>
+                            <th>化合物構造</th>
+                            <th>代表例</th>
+                            <th>代表構造</th>
+                        </tr>
+                    </thead>
+
+                    <tbody></tbody>
+
+                </table>
+            </div>
+            <div class="footer-note">
+                入力後「正誤判定」で採点できます。
+            </div>
+
+        </div>
+
+    </main>
+
+    <script>
+        const data = [
+            {
+                name: 'ヒドロキシ基',
+                structure: '-OH',
+                compoundName: 'アルコール',
+                compoundStructure: 'R-OH',
+                organicCompoundName: 'エタノール',
+                organicCompoundStructure: 'C2H5OH'
+            },
+            {
+                name: 'ヒドロキシ基',
+                structure: '-OH',
+                compoundName: 'フェノール類',
+                compoundStructure: 'R-OH',
+                organicCompoundName: 'フェノール',
+                organicCompoundStructure: 'C6H5OH'
+            },
+            {
+                name: 'エーテル結合',
+                structure: '-O-',
+                compoundName: 'エーテル',
+                compoundStructure: 'R1-O-R2',
+                organicCompoundName: 'ジエチルエーテル',
+                organicCompoundStructure: 'C2H5OC2H5'
+            },
+            {
+                name: 'ホルミル基',
+                structure: '-CHO',
+                compoundName: 'アルデヒド',
+                compoundStructure: 'R-CHO',
+                organicCompoundName: 'アセトアルデヒド',
+                organicCompoundStructure: 'CH3CHO'
+            },
+            {
+                name: 'カルボニル基',
+                structure: '-CO-',
+                compoundName: 'ケトン',
+                compoundStructure: 'R1-CO-R2',
+                organicCompoundName: 'アセトン',
+                organicCompoundStructure: 'CH3COCH3'
+            },
+            {
+                name: 'カルボキシ基',
+                structure: '-COOH',
+                compoundName: 'カルボン酸',
+                compoundStructure: 'R-COOH',
+                organicCompoundName: '酢酸',
+                organicCompoundStructure: 'CH3COOH'
+            },
+            {
+                name: 'エステル結合',
+                structure: '-COO-',
+                compoundName: 'エステル',
+                compoundStructure: 'R1-COO-R2',
+                organicCompoundName: '酢酸エチル',
+                organicCompoundStructure: 'CH3COOC2H5'
+            },
+            {
+                name: 'ニトロ基',
+                structure: '-NO2',
+                compoundName: 'ニトロ化合物',
+                compoundStructure: 'R-NO2',
+                organicCompoundName: 'ニトロベンゼン',
+                organicCompoundStructure: 'C6H5NO2'
+            },
+            {
+                name: 'アミノ基',
+                structure: '-NH2',
+                compoundName: 'アミン',
+                compoundStructure: 'R-NH2',
+                organicCompoundName: 'アニリン',
+                organicCompoundStructure: 'C6H5NH2'
+            },
+            {
+                name: 'スルホ基',
+                structure: '-SO3H',
+                compoundName: 'スルホン酸',
+                compoundStructure: 'R-SO3H',
+                organicCompoundName: 'ベンゼンスルホン酸',
+                organicCompoundStructure: 'C6H5SO3H'
+            },
+        ];
+
+        const tableBody = document.querySelector('#functional-groups-table tbody');
+        const holeCountInput = document.getElementById('hole-count');
+        const shuffleRowsCheckbox = document.getElementById('shuffle-rows');
+        const randomizeButton = document.getElementById('randomize-button');
+        const checkAnswersButton = document.getElementById('check-answers-button');
+        const showAnswersButton = document.getElementById('show-answers-button');
+
+        function createTable() {
+            tableBody.innerHTML = ''; // テーブルをリセット
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                Object.values(item).forEach(text => {
+                    const cell = document.createElement('td');
+                    cell.textContent = text;
+                    row.appendChild(cell);
+                });
+                tableBody.appendChild(row);
+            });
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function randomizeHoles() {
+
+            const holeCount = parseInt(holeCountInput.value, 10);
+
+            createTable();
+
+            if (shuffleRowsCheckbox.checked) {
+
+                const rows = Array.from(tableBody.children);
+
+                shuffleArray(rows);
+
+                tableBody.innerHTML = '';
+
+                rows.forEach(row => tableBody.appendChild(row));
+            }
+
+            // 1列目（官能基名）の重複管理
+            const usedFirstColumnAnswers = new Set();
+
+            tableBody.querySelectorAll('tr').forEach(row => {
+
+                const cells = Array.from(row.children);
+
+                shuffleArray(cells);
+
+                let holesMade = 0;
+
+                for (const cell of cells) {
+
+                    if (holesMade >= holeCount) break;
+
+                    const cellIndex = cells.indexOf(cell);
+
+                    const originalText = cell.textContent;
+
+                    // 1列目だけ重複禁止
+                    if (cellIndex === 0) {
+
+                        if (usedFirstColumnAnswers.has(originalText)) {
+                            continue;
+                        }
+
+                        usedFirstColumnAnswers.add(originalText);
+                    }
+
+                    cell.innerHTML =
+                        `<input type="text" data-answer="${originalText}" />`;
+
+                    const input = cell.querySelector('input');
+
+                    function resize() {
+
+                        const temp = document.createElement('span');
+
+                        temp.style.visibility = 'hidden';
+                        temp.style.position = 'absolute';
+                        temp.style.whiteSpace = 'pre';
+
+                        temp.style.font =
+                            getComputedStyle(input).font;
+
+                        temp.textContent =
+                            input.value || originalText || " ";
+
+                        document.body.appendChild(temp);
+
+                        input.style.width =
+                            `${temp.offsetWidth + 32}px`;
+
+                        temp.remove();
+                    }
+
+                    input.addEventListener('input', resize);
+
+                    input.resizeInput = resize;
+
+                    resize();
+
+                    holesMade++;
+                }
+            });
+        }
+
+        function checkAnswers() {
+
+            tableBody.querySelectorAll('input').forEach(input => {
+
+                const answer =
+                    input.getAttribute('data-answer');
+
+                input.classList.remove(
+                    'correct',
+                    'wrong',
+                    'show-answer'
+                );
+
+                if (input.value === answer) {
+
+                    input.classList.add('correct');
+
+                } else {
+
+                    input.classList.add('wrong');
+                }
+            });
+        }
+
+        function showAnswers() {
+
+            tableBody.querySelectorAll('input').forEach(input => {
+
+                const answer =
+                    input.getAttribute('data-answer');
+
+                if (input.value !== answer) {
+
+                    input.value = answer;
+
+                    input.resizeInput();
+
+                    input.classList.remove(
+                        'correct',
+                        'wrong'
+                    );
+
+                    input.classList.add('show-answer');
+                }
+            });
+        }
+        randomizeButton.addEventListener('click', randomizeHoles);
+        checkAnswersButton.addEventListener('click', checkAnswers);
+        showAnswersButton.addEventListener('click', showAnswers);
+
+        // ページロード時にテーブルを初期化
+        createTable();
+    </script>
+</body>
+
+</html>
